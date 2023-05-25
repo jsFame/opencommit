@@ -1,10 +1,21 @@
 name: Sync Fork with Upstream
 on:
+
+  push:
+    branches: [ "main" ]
+    tags:
+      - "*"
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  pull_request:
+    branches: [ "main" ]
+
   schedule:
-    - cron: '0 0 * * *'  # Run every day at midnight UTC
+    - cron: '0 */6 * * *'  # Run every day at midnight UTC
   repository_dispatch:
     types:
       - sync-fork
+
+  workflow_dispatch:
 
 jobs:
   sync:
