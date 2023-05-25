@@ -1,0 +1,30 @@
+name: Sync Fork with Upstream
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run every day at midnight UTC
+  repository_dispatch:
+    types:
+      - sync-fork
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure Git
+        run: |
+          git config user.name Hiro
+          git config user.email laciferin@gmail.com
+          git remote add upstream https://github.com/di-sukharev/opencommit.git
+
+      - name: Fetch upstream changes
+        run: git fetch upstream
+
+      - name: Merge upstream changes
+        run: git merge upstream/master
+
+      - name: Push changes to fork
+        run: git push origin HEAD:master
