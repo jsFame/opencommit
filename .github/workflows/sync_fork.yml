@@ -48,5 +48,6 @@ jobs:
 
       - name: Push changes to fork
         run: |
+          git log -n 2
           # git remote set-url origin 
           git push origin master
