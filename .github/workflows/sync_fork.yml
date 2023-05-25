@@ -23,8 +23,8 @@ jobs:
       - name: Fetch upstream changes
         run: git fetch upstream
 
-      - name: Merge upstream changes
-        run: git merge upstream/master
+      - name: Rebase upstream changes
+        run: git rebase upstream/master
 
       - name: Push changes to fork
         run: git push origin HEAD:master
