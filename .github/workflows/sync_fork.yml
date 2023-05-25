@@ -49,4 +49,4 @@ jobs:
       - name: Push changes to fork
         run: |
           # git remote set-url origin 
-          git push origin HEAD:master
+          git push origin master
