@@ -2,12 +2,12 @@ name: Sync Fork with Upstream
 on:
 
   push:
-    branches: [ "main" ]
+    branches: [ "main","master" ]
     tags:
       - "*"
       - 'v[0-9]+.[0-9]+.[0-9]+'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main","master" ]
 
   schedule:
     - cron: '0 */6 * * *'  # Run every day at midnight UTC
@@ -20,6 +20,15 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    permissions:
+      contents: write
+      pull-requests: write 
+      issues: read
+      packages: none
 
     steps:
       - name: Checkout code
@@ -38,4 +47,6 @@ jobs:
         run: git rebase upstream/master
 
       - name: Push changes to fork
-        run: git push origin HEAD:master
+        run: |
+          # git remote set-url origin 
+          git push origin HEAD:master
