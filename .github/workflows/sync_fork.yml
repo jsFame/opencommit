@@ -39,6 +39,7 @@ jobs:
           git config user.name Hiro
           git config user.email laciferin@gmail.com
           git remote add upstream https://github.com/di-sukharev/opencommit.git
+          git remote -v
 
       - name: Fetch upstream changes
         run: git fetch upstream
@@ -48,8 +49,6 @@ jobs:
 
       - name: Push changes to fork
         run: |
-          git log -n 2
-          git pull
           git log -n 2
           # git remote set-url origin 
           git push origin master
