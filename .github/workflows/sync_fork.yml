@@ -46,17 +46,14 @@ jobs:
       - name: Fetch upstream changes
         run: git fetch upstream
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        timeout-minutes: 600
+      # - name: Setup upterm session
+      #   uses: lhotari/action-upterm@v1
+      #   timeout-minutes: 600
 
       - name: Rebase upstream changes
         run: git rebase upstream/master
 
-      
-
       - name: Push changes to fork
         run: |
           git log -n 2
-          # git remote set-url origin 
           git push origin master
