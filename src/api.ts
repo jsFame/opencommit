@@ -7,7 +7,14 @@ import {
   OpenAIApi
 } from 'openai';
 
-import { CONFIG_MODES, getConfig } from './commands/config';
+import {
+  CONFIG_MODES,
+  DEFAULT_MODEL_TOKEN_LIMIT,
+  getConfig
+} from './commands/config';
+import { tokenCount } from './utils/tokenCount';
+import { GenerateCommitMessageErrorEnum } from './generateCommitMessageFromGitDiff';
+import { execa } from 'execa';
 
 const config = getConfig();
 
@@ -21,7 +28,7 @@ if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
   intro('opencommit');
 
   outro(
-    'OCO_OPENAI_API_KEY is not set, please run `oc config set OCO_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`'
+    'OCO_OPENAI_API_KEY is not set, please run `oco config set OCO_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`'
   );
   outro(
     'For help look into README https://github.com/di-sukharev/opencommit#setup'
@@ -56,6 +63,14 @@ class OpenAi {
       max_tokens: maxTokens || 500
     };
     try {
+      const REQUEST_TOKENS = messages
+        .map((msg) => tokenCount(msg.content) + 4)
+        .reduce((a, b) => a + b, 0);
+
+      if (REQUEST_TOKENS > DEFAULT_MODEL_TOKEN_LIMIT - maxTokens) {
+        throw new Error(GenerateCommitMessageErrorEnum.tooMuchTokens);
+      }
+
       const { data } = await this.openAI.createChatCompletion(params);
 
       const message = data.choices[0].message;
@@ -88,10 +103,8 @@ export const getOpenCommitLatestVersion = async (): Promise<
   string | undefined
 > => {
   try {
-    const { data } = await axios.get(
-      'https://unpkg.com/opencommit/package.json'
-    );
-    return data.version;
+    const { stdout } = await execa('npm', ['view', 'opencommit', 'version']);
+    return stdout;
   } catch (_) {
     outro('Error while getting the latest version of opencommit');
     return undefined;
