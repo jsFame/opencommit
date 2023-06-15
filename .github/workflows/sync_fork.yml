@@ -10,7 +10,7 @@ on:
     branches: [ "main","master" ]
 
   schedule:
-    - cron: '0 */6 * * *'  # Run every day at midnight UTC
+    - cron: '0 0 */1 * *'  # Run every day at midnight UTC
   repository_dispatch:
     types:
       - sync-fork
@@ -42,6 +42,7 @@ jobs:
           git config user.email laciferin@gmail.com
           git remote add upstream https://github.com/di-sukharev/opencommit.git
           git remote -v
+          git config pull.rebase true
 
       - name: Fetch upstream changes
         run: git fetch upstream
@@ -51,7 +52,7 @@ jobs:
       #   timeout-minutes: 600
 
       - name: Rebase upstream changes
-        run: git rebase upstream/master
+        run: git pull upstream master
 
       - name: Push changes to fork
         run: |
