@@ -59,7 +59,7 @@ jobs:
       #   timeout-minutes: 600
 
       - name: Rebase upstream changes
-        run: git pull upstream master
+        run: git merge upstream/master
 
       - name: Push changes to fork
         run: |
