@@ -38,7 +38,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          # fetch-depth: 0
+          clean: true
+          ref: master
+
 
       - name: Configure Git
         run: |
